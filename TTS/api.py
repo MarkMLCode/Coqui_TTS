@@ -78,7 +78,7 @@ class TTS(nn.Module):
 
         if model_name is not None:
             if "tts_models" in model_name or "coqui_studio" in model_name:
-                self.load_tts_model_by_name(model_name, gpu)
+                self.load_tts_model_by_name(model_name, gpu, cs_api_model)
             elif "voice_conversion_models" in model_name:
                 self.load_vc_model_by_name(model_name, gpu)
 
@@ -161,7 +161,7 @@ class TTS(nn.Module):
         model_path, config_path, _, _, _ = self.download_model_by_name(model_name)
         self.voice_converter = Synthesizer(vc_checkpoint=model_path, vc_config=config_path, use_cuda=gpu)
 
-    def load_tts_model_by_name(self, model_name: str, gpu: bool = False):
+    def load_tts_model_by_name(self, model_name: str, gpu: bool = False, cs_api_model = "XTTS"):
         """Load one of 🐸TTS models by name.
 
         Args:
@@ -175,7 +175,7 @@ class TTS(nn.Module):
         self.model_name = model_name
 
         if "coqui_studio" in model_name:
-            self.csapi = CS_API()
+            self.csapi = CS_API(model=cs_api_model)
         else:
             model_path, config_path, vocoder_path, vocoder_config_path, model_dir = self.download_model_by_name(
                 model_name
@@ -253,7 +253,7 @@ class TTS(nn.Module):
                 raise ValueError("Coqui Studio models do not support `speaker_wav` argument.")
             if speaker is not None:
                 raise ValueError("Coqui Studio models do not support `speaker` argument.")
-            if language is not None and language != "en":
+            if language is not None and language != "en" and self.cs_api_model != "XTTS-multilang":
                 raise ValueError("Coqui Studio models currently support only `language=en` argument.")
             if emotion not in ["Neutral", "Happy", "Sad", "Angry", "Dull"]:
                 raise ValueError(f"Emotion - `{emotion}` - must be one of `Neutral`, `Happy`, `Sad`, `Angry`, `Dull`.")

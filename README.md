@@ -271,8 +271,8 @@ models = TTS(cs_api_model="V1").list_models()
 # Emotion control only works with V1 model
 tts.tts_to_file(text="This is a test.", file_path=OUTPUT_PATH, emotion="Happy", speed=1.5)
 
-# XTTS-multilingual
-models = TTS(cs_api_model="XTTS-multilingual").list_models()
+# XTTS-multilang
+models = TTS(cs_api_model="XTTS-multilang").list_models()
 # Run TTS with emotion and speed control
 # Emotion control only works with V1 model
 tts.tts_to_file(text="Das ist ein Test.", file_path=OUTPUT_PATH, language="de", speed=1.0)
